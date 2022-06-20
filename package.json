@@ -2,10 +2,10 @@
   "name": "psychic-octo-guacamole",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/WilliamL1998/psychic-octo-guacamole#readme",
   "dependencies": {
     "console.table": "^0.10.0",
-    "inquirer": "^9.0.0",
+    "inquirer": "^8.2.4",
     "mysql2": "^2.3.3"
   }
 }
