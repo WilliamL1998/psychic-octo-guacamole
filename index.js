@@ -19,7 +19,7 @@ const promptMenu = () => {
             {
                 type: "list",
                 message: "What would you like to do?",
-                choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Exit"],
+                choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee's role", "Exit"],
                 name: "menu"
             }
         ])
@@ -43,7 +43,7 @@ const promptMenu = () => {
                 case "Add an employee":
                     addEmployee();
                     break;
-                case "Update an employee role":
+                case "Update an employee's role":
                     updateRole();
                     break;
                 default:
@@ -233,7 +233,50 @@ const addEmployee = () => {
 }
 
 const updateRole = () => {
-    
+    db.query(`SELECT CONCAT(first_name, " ", last_name) AS employee, id FROM employee`, function(err, results) {
+        let employeeChoices = results.map(({employee, id}) => ({name: employee, value: id}))
+
+        db.query(`SELECT title, id FROM role`, function(err, results) {
+            let roleChoices = results.map(({title, id}) => ({name: title, value: id}))
+
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        message: "Which employee's role do you want to update?",
+                        choices: employeeChoices,
+                        name: "id",
+                        validate: (id) => {
+                            if (id) {
+                                return true;
+                            } else {
+                                console.log("Please select the employee whose role you want to update.");
+                                return false;
+                            }
+                        }
+                    },
+                    {
+                        type: "list",
+                        message: "Which role do you want to assign the selected employee?",
+                        choices: roleChoices,
+                        name: "role_id",
+                        validate: (role_id) => {
+                            if (role_id) {
+                                return true;
+                            } else {
+                                console.log("Please select the role you want to assign the selecte employee.");
+                                return false;
+                            }
+                        }
+                    }
+                ])
+                .then(({id, role_id}) => {
+                    db.query(`UPDATE employee SET role_id = ${role_id} WHERE id = ${id}`)
+                    console.log(`Updated employee's role`)
+                    promptMenu();
+                })
+        })
+    })
 }
 
 promptMenu();
